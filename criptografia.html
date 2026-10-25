@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criptografia — Explicação e Ferramenta</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0f172a;
+    color: white;
+    margin: 20px;
+    line-height: 1.6;
+}
+h1, h2 {
+    text-align: center;
+    color: #38bdf8;
+}
+p {
+    margin-top: 10px;
+}
+.container {
+    margin-top: 30px;
+    background-color: #1e293b;
+    padding: 15px;
+    border-radius: 8px;
+}
+label, textarea, input, select {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+}
+button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #38bdf8;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0ea5e9;
+}
+.saida {
+    background-color: #0f172a;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Criptografia: Teoria e Prática</h1>
+
+<h2>O que é Criptografia?</h2>
+<p>
+Criptografia é o processo de transformar uma mensagem comum (texto simples) em um formato ilegível (texto cifrado),
+para proteger seu conteúdo contra acessos não autorizados. Ela é usada em praticamente tudo que envolve segurança digital —
+como senhas, mensagens, sites, cartões e até aplicativos de conversa.
+</p>
+
+<h2>1. Cifra de César</h2>
+<p>
+A <strong>Cifra de César</strong> é uma das formas mais antigas de criptografia. Ela foi usada por Júlio César
+para enviar mensagens secretas aos seus generais. O método consiste em <strong>deslocar</strong> cada letra do alfabeto
+um certo número de posições.
+</p>
+<p>
+Por exemplo, se o deslocamento for 3:
+<br>
+A → D, B → E, C → F e assim por diante.
+<br><br>
+Texto original: <em>ATAQUE</em><br>
+Deslocamento: 3<br>
+Texto cifrado: <em>DWDTXH</em>
+</p>
+
+<h2>2. Cifra de Vigenère</h2>
+<p>
+A <strong>Cifra de Vigenère</strong> é uma evolução da Cifra de César. Em vez de usar um número fixo,
+usa-se uma <strong>palavra-chave</strong>. Cada letra da chave representa um deslocamento diferente.
+</p>
+<p>
+Por exemplo, com a palavra-chave “CHAVE”:
+<br>
+Texto: <em>ATAQUE</em><br>
+Chave: <em>CHAVE</em><br>
+O “C” desloca 2 letras, “H” desloca 7, “A” desloca 0, e assim por diante.
+</p>
+
+<h2>3. Cifra de Transposição</h2>
+<p>
+Na <strong>Cifra de Transposição</strong>, as letras da mensagem não são trocadas por outras,
+mas apenas <strong>têm suas posições embaralhadas</strong> de acordo com uma palavra-chave.
+</p>
+<p>
+Exemplo:
+<br>
+Texto: <em>ATAQUE</em><br>
+Chave: <em>CHAVE</em><br>
+As letras são reorganizadas seguindo a ordem da chave. Assim, a mensagem muda a posição dos caracteres,
+mas mantém as mesmas letras.
+</p>
+
+<h2>Ferramenta Prática</h2>
+<p>
+Agora que você entendeu como cada tipo de cifra funciona, use a ferramenta abaixo
+para criptografar e descriptografar mensagens com os métodos que estudamos.
+</p>
+
+<div class="container">
+
+    <label for="metodo">Escolha o método:</label>
+    <select id="metodo">
+        <option value="cesar">Cifra de César</option>
+        <option value="vigenere">Cifra de Vigenère</option>
+        <option value="transposicao">Cifra de Transposição</option>
+    </select>
+
+    <label for="texto">Texto:</label>
+    <textarea id="texto" rows="5" placeholder="Digite o texto aqui..."></textarea>
+
+    <label for="parametro">Parâmetro (número ou chave):</label>
+    <input type="text" id="parametro" placeholder="Ex: 3 ou CHAVE">
+
+    <button onclick="criptografar()">Criptografar</button>
+    <button onclick="descriptografar()">Descriptografar</button>
+
+    <p>Resultado:</p>
+    <div class="saida" id="resultado"></div>
+</div>
+
+<script>
+
+// Cifra de César
+function cesarCriptografar(texto, deslocamento) {
+    deslocamento = ((deslocamento % 26) + 26) % 26; // aceita números negativos ou grandes
+    let resultado = "";
+    for (let i = 0; i < texto.length; i++) {
+        let caractere = texto[i];
+        if (caractere >= 'A' && caractere <= 'Z') {
+            resultado += String.fromCharCode((caractere.charCodeAt(0) - 65 + deslocamento) % 26 + 65);
+        } else if (caractere >= 'a' && caractere <= 'z') {
+            resultado += String.fromCharCode((caractere.charCodeAt(0) - 97 + deslocamento) % 26 + 97);
+        } else {
+            resultado += caractere;
+        }
+    }
+    return resultado;
+}
+function cesarDescriptografar(texto, deslocamento) {
+    return cesarCriptografar(texto, -deslocamento);
+}
+
+// Cifra de Vigenère
+function vigenereCriptografar(texto, chave) {
+    let resultado = "";
+    let j = 0;
+    for (let i = 0; i < texto.length; i++) {
+        let caractere = texto[i];
+        if (/[a-zA-Z]/.test(caractere)) {
+            let maiuscula = (caractere === caractere.toUpperCase());
+            let base = maiuscula ? 65 : 97;
+            let deslocamento = chave[j % chave.length].toLowerCase().charCodeAt(0) - 97;
+            let codigo = (caractere.toLowerCase().charCodeAt(0) - 97 + deslocamento) % 26 + base;
+            resultado += String.fromCharCode(codigo);
+            j++;
+        } else {
+            resultado += caractere;
+        }
+    }
+    return resultado;
+}
+function vigenereDescriptografar(texto, chave) {
+    let resultado = "";
+    let j = 0;
+    for (let i = 0; i < texto.length; i++) {
+        let caractere = texto[i];
+        if (/[a-zA-Z]/.test(caractere)) {
+            let maiuscula = (caractere === caractere.toUpperCase());
+            let base = maiuscula ? 65 : 97;
+            let deslocamento = chave[j % chave.length].toLowerCase().charCodeAt(0) - 97;
+            let codigo = (caractere.toLowerCase().charCodeAt(0) - 97 - deslocamento + 26) % 26 + base;
+            resultado += String.fromCharCode(codigo);
+            j++;
+        } else {
+            resultado += caractere;
+        }
+    }
+    return resultado;
+}
+
+// Cifra de Transposição
+function transposicaoCriptografar(texto, chave) {
+    let tamanho = chave.length;
+    let resultado = "";
+    for (let i = 0; i < tamanho; i++) {
+        for (let j = i; j < texto.length; j += tamanho) {
+            resultado += texto[j];
+        }
+    }
+    return resultado;
+}
+function transposicaoDescriptografar(texto, chave) {
+    let k = chave.length;
+    let n = texto.length;
+    let base = Math.floor(n / k);   // tamanho mínimo de cada coluna
+    let extra = n % k;              // as primeiras "extra" colunas têm uma letra a mais
+    let colunas = [];
+    let pos = 0;
+    for (let c = 0; c < k; c++) {
+        let tam = base + (c < extra ? 1 : 0);
+        colunas.push(texto.slice(pos, pos + tam));
+        pos += tam;
+    }
+    let resultado = "";
+    for (let i = 0; i <= base; i++) {
+        for (let c = 0; c < k; c++) {
+            if (i < colunas[c].length) resultado += colunas[c][i];
+        }
+    }
+    return resultado;
+}
+
+// Valida a chave de Vigenère (só letras A-Z) e a de Transposição (não vazia)
+function chaveValida(metodo, parametro) {
+    if (metodo === "vigenere" && !/^[a-zA-Z]+$/.test(parametro)) {
+        alert("Digite uma palavra-chave só com letras (sem espaços ou acentos) para a Cifra de Vigenère.");
+        return false;
+    }
+    if (metodo === "transposicao" && parametro.length === 0) {
+        alert("Digite uma palavra-chave para a Cifra de Transposição.");
+        return false;
+    }
+    return true;
+}
+
+function processar(modo) {
+    let metodo = document.getElementById("metodo").value;
+    let texto = document.getElementById("texto").value;
+    let parametro = document.getElementById("parametro").value.trim();
+    let enc = (modo === "cifrar");
+    let saida = "";
+
+    if (metodo === "cesar") {
+        let n = parseInt(parametro);
+        if (isNaN(n)) { alert("Digite um número para a Cifra de César."); return; }
+        saida = enc ? cesarCriptografar(texto, n) : cesarDescriptografar(texto, n);
+    } else {
+        if (!chaveValida(metodo, parametro)) return;
+        if (metodo === "vigenere") {
+            saida = enc ? vigenereCriptografar(texto, parametro) : vigenereDescriptografar(texto, parametro);
+        } else {
+            saida = enc ? transposicaoCriptografar(texto, parametro) : transposicaoDescriptografar(texto, parametro);
+        }
+    }
+
+    document.getElementById("resultado").textContent = saida;
+}
+
+function criptografar()    { processar("cifrar"); }
+function descriptografar() { processar("decifrar"); }
+
+</script>
+
+</body>
+</html>
