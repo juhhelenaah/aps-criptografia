@@ -6,10 +6,9 @@ Sobre o projeto
 
 Uma página web didática que explica o que é criptografia e traz uma ferramenta para criptografar e descriptografar mensagens com três cifras clássicas:
 
-Cifra	Como funciona	Parâmetro
-César	Desloca cada letra do alfabeto um número fixo de posições.	Número (ex.: 3)
-Vigenère	Evolução da César: cada letra da chave define um deslocamento diferente.	Palavra-chave só com letras (ex.: CHAVE)
-Transposição	Mantém as letras, mas embaralha suas posições a partir da chave.	Palavra-chave (ex.: CHAVE)
+Cifra de César: desloca cada letra do alfabeto um número fixo de posições. Parâmetro: um número (ex.: 3).
+Cifra de Vigenère: evolução da César, em que cada letra da chave define um deslocamento diferente. Parâmetro: palavra-chave só com letras (ex.: CHAVE).
+Cifra de Transposição: mantém as letras, mas embaralha suas posições a partir da chave. Parâmetro: palavra-chave (ex.: CHAVE).
 
 Exemplo (César, deslocamento 3): ATAQUE → DWDTXH
 
